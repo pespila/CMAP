@@ -1,8 +1,3 @@
-CMAP (as the work order said)
-
-PLUS an installation package
-
-
 ---------------------------------------
 ---------------------------------------
 Command line arguments for calculation
