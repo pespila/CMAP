@@ -321,19 +321,6 @@ Design Decisions & Issues
 -------------------------
 -------------------------
 
-
-Well, now you could have some questions. So this file is here for giving you
-all answers you need...
-
-Q. Why this programm is writen in an object-oriented way?
-
-A. Object orientation is the modern way of programming. So in this case I
-thought to be up to date. The most important reason why the connectivity map
-is written object-oriented is, that all functions for one specific calculation
-is packed into one methods. This makes the functions privat and they can't
-be called and manipulated. Another important reason is, that the readability
-of the code is easier.
-
 Q. How to install?
 
 A. For the installation you need to do only a few things:
@@ -348,17 +335,3 @@ A. For the installation you need to do only a few things:
 Q. In which order are all the objects and methods called?
 
 A. Class Hierachy: the class hierarchy is found in the following file "hierarchy.pdf"
-
-Q. Why are there similar functions with other names and sometimes a different code with the same solution?
-
-A.	a.)	To call the methods from an object, the method has to be defined. So every object needs its own function.
-		The different names are chosen to avoid confusions while reading the code.
-	b.) Sometimes the code is written in another way because of running time. In some cases it makes sense to vary the code to get a faster running time.
-
-Q. What is the connectivity about?
-
-A. To answer this question I recommend the paper to you. It is saved under: "Lamb Golub 2006.pdf"
-
-Q. Where can I get support?
-
-A. Michael Bauer, E-Mail: michael.bauer.tsv@gmail.com
