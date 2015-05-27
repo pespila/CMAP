@@ -7,8 +7,9 @@ CMAP (The Connectivity Map)
 The Connectivity Map: Using Gene-Expression Signatures to Connect Small Molecules, Genes, and Disease, Justin Lamb et al., Science 313, 1929 (2006); DOI: 10.1126/science.1132939
 
 ---------------------------------------
+
 Source files downloaded from ftp://ftp.broad.mit.edu/pub/cmap/rankMatrix.txt.zip
----------------------------------------
+
 
 ---------------------------------------
 ---------------------------------------
