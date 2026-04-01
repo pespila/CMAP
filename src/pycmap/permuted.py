@@ -1,0 +1,1 @@
+"""Permuted results computation."""

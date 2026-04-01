@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pycmap-score"
+version = "0.1.0"
+description = "Connectivity Map (CMAP) algorithm — KS-based drug-gene connectivity scoring"
+readme = "README.md"
+license = "GPL-3.0-or-later"
+requires-python = ">=3.11"
+authors = [
+    { name = "Michael Wallner", email = "wallner.miche@gmail.com" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+]
+
+[project.optional-dependencies]
+fetch = ["httpx>=0.24"]
+dev = ["pytest>=7.0", "ruff>=0.4", "pytest-cov", "build"]
+all = ["pycmap-score[fetch,dev]"]
+
+[project.urls]
+Repository = "https://github.com/pespila/CMAP"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
