@@ -34,5 +34,8 @@ all = ["pycmap-score[fetch,dev]"]
 [project.urls]
 Repository = "https://github.com/pespila/CMAP"
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/pycmap"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
