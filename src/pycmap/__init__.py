@@ -113,14 +113,18 @@ def cmap(
 
     # Compute permuted results by name
     by_name = compute_permuted_results(
-        det, data, mode="by_name",
+        det,
+        data,
+        mode="by_name",
         p_value_dist=p_value_dist,
         specificity_matrix=spec_by_name,
     )
 
     # Compute permuted results by cell line
     by_cell = compute_permuted_results(
-        det, data, mode="by_cell",
+        det,
+        data,
+        mode="by_cell",
         p_value_dist=p_value_cell_dist,
         specificity_matrix=spec_by_cell,
     )

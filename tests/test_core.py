@@ -265,11 +265,15 @@ def test_ks_permutation_batch_shape() -> None:
 def test_ks_permutation_batch_reproducible() -> None:
     """Same seed must produce identical results on two separate calls."""
     result_a = ks_permutation_batch(
-        n_total=30, sample_size=4, n_permutations=100,
+        n_total=30,
+        sample_size=4,
+        n_permutations=100,
         rng=np.random.default_rng(77),
     )
     result_b = ks_permutation_batch(
-        n_total=30, sample_size=4, n_permutations=100,
+        n_total=30,
+        sample_size=4,
+        n_permutations=100,
         rng=np.random.default_rng(77),
     )
     assert_allclose(result_a, result_b)
@@ -278,11 +282,15 @@ def test_ks_permutation_batch_reproducible() -> None:
 def test_ks_permutation_batch_different_seeds_differ() -> None:
     """Different seeds should (with overwhelming probability) produce different results."""
     result_a = ks_permutation_batch(
-        n_total=50, sample_size=5, n_permutations=50,
+        n_total=50,
+        sample_size=5,
+        n_permutations=50,
         rng=np.random.default_rng(1),
     )
     result_b = ks_permutation_batch(
-        n_total=50, sample_size=5, n_permutations=50,
+        n_total=50,
+        sample_size=5,
+        n_permutations=50,
         rng=np.random.default_rng(2),
     )
     assert not np.allclose(result_a, result_b)

@@ -47,45 +47,35 @@ def test_non_null_pct_equal_split() -> None:
 def test_compute_p_value_sentinel_n1() -> None:
     """n=1 must return the sentinel 100.0 regardless of other args."""
     dist = {"1": np.array([0.1, 0.2, 0.3])}
-    result = compute_p_value(
-        enrichment=0.5, n=1, mean_score=0.4, non_null=80.0, p_value_dist=dist
-    )
+    result = compute_p_value(enrichment=0.5, n=1, mean_score=0.4, non_null=80.0, p_value_dist=dist)
     assert result == 100.0
 
 
 def test_compute_p_value_sentinel_mean_zero() -> None:
     """mean_score=0 must return the sentinel 100.0."""
     dist = {"3": np.array([0.1, 0.2, 0.3])}
-    result = compute_p_value(
-        enrichment=0.5, n=3, mean_score=0.0, non_null=80.0, p_value_dist=dist
-    )
+    result = compute_p_value(enrichment=0.5, n=3, mean_score=0.0, non_null=80.0, p_value_dist=dist)
     assert result == 100.0
 
 
 def test_compute_p_value_sentinel_non_null_low() -> None:
     """non_null <= 50 must return the sentinel 100.0."""
     dist = {"4": np.array([0.1, 0.2, 0.3, 0.4])}
-    result = compute_p_value(
-        enrichment=0.5, n=4, mean_score=0.3, non_null=50.0, p_value_dist=dist
-    )
+    result = compute_p_value(enrichment=0.5, n=4, mean_score=0.3, non_null=50.0, p_value_dist=dist)
     assert result == 100.0
 
 
 def test_compute_p_value_sentinel_non_null_exactly_50() -> None:
     """non_null exactly 50 still triggers the sentinel (condition is <= 50)."""
     dist = {"5": np.array([0.1, 0.2, 0.3])}
-    result = compute_p_value(
-        enrichment=0.3, n=5, mean_score=0.2, non_null=50.0, p_value_dist=dist
-    )
+    result = compute_p_value(enrichment=0.3, n=5, mean_score=0.2, non_null=50.0, p_value_dist=dist)
     assert result == 100.0
 
 
 def test_compute_p_value_sentinel_missing_key() -> None:
     """Missing key in p_value_dist must return the sentinel 100.0."""
     dist: dict[str, np.ndarray] = {}
-    result = compute_p_value(
-        enrichment=0.5, n=4, mean_score=0.3, non_null=80.0, p_value_dist=dist
-    )
+    result = compute_p_value(enrichment=0.5, n=4, mean_score=0.3, non_null=80.0, p_value_dist=dist)
     assert result == 100.0
 
 
@@ -110,9 +100,7 @@ def test_compute_p_value_zero_enrichment_included() -> None:
     null = np.array([0.0, 0.1, 0.2, 0.3])
     dist = {"3": null}
     # abs(0.0) = 0 → all 4 values in null >= 0 → p = 4/4 = 1.0
-    result = compute_p_value(
-        enrichment=0.0, n=3, mean_score=0.3, non_null=80.0, p_value_dist=dist
-    )
+    result = compute_p_value(enrichment=0.0, n=3, mean_score=0.3, non_null=80.0, p_value_dist=dist)
     assert_allclose(result, 1.0)
 
 
@@ -218,9 +206,7 @@ def test_permuted_results_sorted_by_p(
     """p_value array must be in non-decreasing (ascending) order."""
     detailed = compute_detailed_results(small_up_genes, small_down_genes, cmap_data)
     permuted = compute_permuted_results(detailed, cmap_data, mode="by_name")
-    assert np.all(np.diff(permuted.p_value) >= 0), (
-        "p_values are not in ascending order"
-    )
+    assert np.all(np.diff(permuted.p_value) >= 0), "p_values are not in ascending order"
 
 
 def test_permuted_results_n_counts_correct(
@@ -293,11 +279,7 @@ def test_permuted_results_with_p_value_dist(
     detailed = compute_detailed_results(small_up_genes, small_down_genes, cmap_data)
 
     # Build a null distribution for groups of size 4 (each drug appears 4 times)
-    null = np.abs(
-        np.array([
-            float(np.random.default_rng(i).uniform(-1, 1)) for i in range(1000)
-        ])
-    )
+    null = np.abs(np.array([float(np.random.default_rng(i).uniform(-1, 1)) for i in range(1000)]))
     p_value_dist = {"4": null}
 
     permuted = compute_permuted_results(

@@ -69,8 +69,7 @@ def cmap_data(
     unique_names = list(dict.fromkeys(instance_names))  # preserve first-occurrence order
     unique_name_cell = list(
         dict.fromkeys(
-            f"{name} - {cell}"
-            for name, cell in zip(instance_names, cell_lines, strict=True)
+            f"{name} - {cell}" for name, cell in zip(instance_names, cell_lines, strict=True)
         )
     )
 

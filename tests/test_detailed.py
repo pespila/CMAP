@@ -55,9 +55,7 @@ def test_detailed_results_sorted_descending(
 ) -> None:
     """Scores must be in non-increasing (descending) order."""
     result = compute_detailed_results(small_up_genes, small_down_genes, cmap_data)
-    assert np.all(np.diff(result.scores) <= 0), (
-        "Scores are not in descending order"
-    )
+    assert np.all(np.diff(result.scores) <= 0), "Scores are not in descending order"
 
 
 def test_detailed_results_secondary_sort_exact_ties() -> None:

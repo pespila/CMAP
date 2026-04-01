@@ -497,8 +497,7 @@ def save_rank_matrix(
 
     if len(gene_names) != n_genes:
         raise ValueError(
-            f"gene_names length ({len(gene_names)}) does not match "
-            f"matrix row count ({n_genes})."
+            f"gene_names length ({len(gene_names)}) does not match matrix row count ({n_genes})."
         )
     if len(instance_ids) != n_instances:
         raise ValueError(

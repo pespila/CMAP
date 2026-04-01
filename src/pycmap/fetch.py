@@ -30,12 +30,8 @@ from typing import Literal
 logger = logging.getLogger(__name__)
 
 _CLUE_API_BASE = "https://api.clue.io/api"
-_LEGACY_RANK_MATRIX_URL = (
-    "https://portals.broadinstitute.org/cmap/rankMatrix.txt.zip"
-)
-_LONGEVITY_TOOLS_BASE = (
-    "https://girke.bioinformatics.ucr.edu/longevityTools"
-)
+_LEGACY_RANK_MATRIX_URL = "https://portals.broadinstitute.org/cmap/rankMatrix.txt.zip"
+_LONGEVITY_TOOLS_BASE = "https://girke.bioinformatics.ucr.edu/longevityTools"
 
 
 def _ensure_httpx():  # type: ignore[no-untyped-def]
@@ -46,8 +42,7 @@ def _ensure_httpx():  # type: ignore[no-untyped-def]
         return httpx
     except ImportError as exc:
         raise ImportError(
-            "httpx is required for data fetching. "
-            "Install it with: pip install pycmap-score[fetch]"
+            "httpx is required for data fetching. Install it with: pip install pycmap-score[fetch]"
         ) from exc
 
 
@@ -262,8 +257,7 @@ def fetch_and_install(
     if source in ("clue", "both"):
         if api_key is None:
             raise ValueError(
-                "An API key is required for clue.io. "
-                "Register at https://clue.io to obtain one."
+                "An API key is required for clue.io. Register at https://clue.io to obtain one."
             )
         fetch_from_clue(api_key, output_dir)
 

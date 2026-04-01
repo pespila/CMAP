@@ -316,8 +316,7 @@ def precompute_specificity(
     else:
         with concurrent.futures.ProcessPoolExecutor(max_workers=n_workers) as executor:
             futures = {
-                executor.submit(_compute_specificity_column, task): task[0]
-                for task in tasks
+                executor.submit(_compute_specificity_column, task): task[0] for task in tasks
             }
             for future in concurrent.futures.as_completed(futures):
                 col_idx, enrichments = future.result()
@@ -386,22 +385,26 @@ def install(
     name_counts = Counter(data.instance_names)
     unique_freqs_by_name = sorted(set(name_counts.values()))
 
-    name_cell = [
-        f"{n} - {c}" for n, c in zip(data.instance_names, data.cell_lines, strict=True)
-    ]
+    name_cell = [f"{n} - {c}" for n, c in zip(data.instance_names, data.cell_lines, strict=True)]
     cell_counts = Counter(name_cell)
     unique_freqs_by_cell = sorted(set(cell_counts.values()))
 
     # Pre-compute p-value distributions
     logger.info("Pre-computing p-value distributions (by name)...")
     precompute_p_values(
-        n_instances, unique_freqs_by_name, n_permutations, seed,
+        n_instances,
+        unique_freqs_by_name,
+        n_permutations,
+        seed,
         output_path=data_dir / "pValue.npz",
     )
 
     logger.info("Pre-computing p-value distributions (by cell)...")
     precompute_p_values(
-        n_instances, unique_freqs_by_cell, n_permutations, seed,
+        n_instances,
+        unique_freqs_by_cell,
+        n_permutations,
+        seed,
         output_path=data_dir / "pValueByCell.npz",
     )
 
@@ -412,19 +415,28 @@ def install(
     if msig_up.exists() and msig_down.exists():
         logger.info("Pre-computing specificity matrix (by name)...")
         precompute_specificity(
-            data_dir, msig_up, msig_down, mode="by_name",
-            n_workers=n_workers, output_path=data_dir / "specificity.npz",
+            data_dir,
+            msig_up,
+            msig_down,
+            mode="by_name",
+            n_workers=n_workers,
+            output_path=data_dir / "specificity.npz",
         )
 
         logger.info("Pre-computing specificity matrix (by cell)...")
         precompute_specificity(
-            data_dir, msig_up, msig_down, mode="by_cell",
-            n_workers=n_workers, output_path=data_dir / "specificityCell.npz",
+            data_dir,
+            msig_up,
+            msig_down,
+            mode="by_cell",
+            n_workers=n_workers,
+            output_path=data_dir / "specificityCell.npz",
         )
     else:
         logger.warning(
             "MSigDB files not found (%s, %s). Skipping specificity pre-computation.",
-            msig_up, msig_down,
+            msig_up,
+            msig_down,
         )
 
     logger.info("CMAP installation complete.")

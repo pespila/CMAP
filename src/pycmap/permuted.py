@@ -252,15 +252,11 @@ def compute_permuted_results(
         non_null_pcts[i] = _non_null_pct(instance_scores)
 
         # P-value
-        p_values[i] = compute_p_value(
-            enrichments[i], n, means[i], non_null_pcts[i], p_value_dist
-        )
+        p_values[i] = compute_p_value(enrichments[i], n, means[i], non_null_pcts[i], p_value_dist)
 
         # Specificity
         if specificity_matrix is not None and i < specificity_matrix.shape[0]:
-            specificities[i] = compute_specificity(
-                enrichments[i], specificity_matrix[i, :]
-            )
+            specificities[i] = compute_specificity(enrichments[i], specificity_matrix[i, :])
         else:
             specificities[i] = 0.0
 

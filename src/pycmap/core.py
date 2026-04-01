@@ -100,9 +100,9 @@ def ks_statistic_batch(sorted_ranks: np.ndarray, n: int) -> np.ndarray:
         return np.zeros(num_instances, dtype=np.float64)
 
     j = np.arange(1, t + 1, dtype=np.float64)[:, np.newaxis]  # (t, 1)
-    ranks_f = sorted_ranks.astype(np.float64)                   # (t, K)
+    ranks_f = sorted_ranks.astype(np.float64)  # (t, K)
 
-    a = np.max(j / t - ranks_f / n, axis=0)          # (K,)
+    a = np.max(j / t - ranks_f / n, axis=0)  # (K,)
     b = np.max(ranks_f / n - (j - 1.0) / t, axis=0)  # (K,)
 
     # Signed selection: use a when a > b, else -b
