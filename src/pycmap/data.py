@@ -511,3 +511,134 @@ def save_rank_matrix(
         gene_names=np.array(gene_names, dtype=object),
         instance_ids=np.array(instance_ids, dtype=object),
     )
+
+
+# ---------------------------------------------------------------------------
+# Synthetic data generator
+# ---------------------------------------------------------------------------
+
+_DEMO_DRUGS = [
+    "metformin",
+    "geldanamycin",
+    "tanespimycin",
+    "LY-294002",
+    "sirolimus",
+    "trichostatin A",
+    "vorinostat",
+    "wortmannin",
+    "alvespimycin",
+    "monorden",
+    "phenoxybenzamine",
+    "tretinoin",
+    "norfloxacin",
+    "fluphenazine",
+    "droperidol",
+]
+
+_DEMO_CELL_LINES = ["MCF7", "PC3", "HL60", "SKMEL5", "ssMCF7"]
+
+
+def synthetic_data(
+    n_genes: int = 22_283,
+    n_instances: int = 6100,
+    extra_genes: list[str] | None = None,
+    n_drugs: int | None = None,
+    seed: int = 42,
+) -> CmapData:
+    """Generate a synthetic CMAP dataset for testing and demonstration.
+
+    Creates a rank matrix where each column is a random permutation of
+    ``1..n_genes``, assigned to realistic-looking drug names and cell lines.
+    The gene name space includes Affymetrix-style probe IDs, and any
+    additional gene names passed via *extra_genes* are guaranteed to be
+    present (so that ``.grp`` files from ``test_files/`` will match).
+
+    Parameters
+    ----------
+    n_genes:
+        Number of genes (rows).  Default 22 283 matches the original CMAP
+        chip size.
+    n_instances:
+        Number of drug-treatment instances (columns).  Default 6 100
+        matches the original CMAP.
+    extra_genes:
+        Additional gene identifiers to include in the gene name list.
+        Useful for ensuring your ``.grp`` query files match.  Duplicates
+        with auto-generated names are handled gracefully.
+    n_drugs:
+        Number of unique drug names.  Defaults to ``min(n_instances // 4, 15)``
+        so that each drug has multiple instances for meaningful permuted results.
+    seed:
+        Random seed for reproducibility.
+
+    Returns
+    -------
+    CmapData
+        A fully populated :class:`CmapData` instance ready for use with
+        :func:`~pycmap.detailed.compute_detailed_results` and
+        :func:`~pycmap.permuted.compute_permuted_results`.
+
+    Examples
+    --------
+    >>> from pycmap.data import synthetic_data
+    >>> data = synthetic_data(n_genes=1000, n_instances=50)
+    >>> data.rank_matrix.shape
+    (1000, 50)
+
+    Run against the included test files:
+
+    >>> from pycmap import compute_detailed_results
+    >>> from pycmap.data import synthetic_data, read_grp
+    >>> genes = read_grp("test_files/readUp.grp") + read_grp("test_files/alzheimerUp.grp")
+    >>> data = synthetic_data(extra_genes=genes)
+    >>> result = compute_detailed_results("test_files/readUp.grp", "test_files/readDown.grp", data)
+    """
+    rng = np.random.default_rng(seed)
+
+    if n_drugs is None:
+        n_drugs = min(n_instances // 4, len(_DEMO_DRUGS))
+    drug_names = (
+        _DEMO_DRUGS[:n_drugs]
+        if n_drugs <= len(_DEMO_DRUGS)
+        else [
+            _DEMO_DRUGS[i % len(_DEMO_DRUGS)] if i < len(_DEMO_DRUGS) else f"drug_{i:04d}"
+            for i in range(n_drugs)
+        ]
+    )
+
+    # --- gene names -----------------------------------------------------------
+    # Start with Affymetrix-style probe IDs, then append extras
+    base_genes = [f"{i + 100}_at" for i in range(n_genes)]
+    if extra_genes:
+        # Replace some base genes with the extras so total stays n_genes
+        existing = set(base_genes)
+        new_genes = [g for g in extra_genes if g not in existing]
+        if new_genes:
+            # Replace the last len(new_genes) base genes
+            n_replace = min(len(new_genes), n_genes)
+            base_genes[-n_replace:] = new_genes[:n_replace]
+    gene_names = base_genes[:n_genes]
+
+    # --- rank matrix ----------------------------------------------------------
+    base_ranks = np.arange(1, n_genes + 1, dtype=np.int16)
+    cols = [rng.permutation(base_ranks) for _ in range(n_instances)]
+    rank_matrix = np.stack(cols, axis=1)
+
+    # --- instance metadata ----------------------------------------------------
+    instance_ids = np.arange(1, n_instances + 1, dtype=np.int64)
+    instance_names = [drug_names[i % len(drug_names)] for i in range(n_instances)]
+    cell_lines = [_DEMO_CELL_LINES[i % len(_DEMO_CELL_LINES)] for i in range(n_instances)]
+
+    unique_names = list(dict.fromkeys(instance_names))
+    name_cell = [f"{n} - {c}" for n, c in zip(instance_names, cell_lines, strict=True)]
+    unique_name_cell = list(dict.fromkeys(name_cell))
+
+    return CmapData(
+        rank_matrix=rank_matrix,
+        gene_names=gene_names,
+        instance_ids=instance_ids,
+        instance_names=instance_names,
+        cell_lines=cell_lines,
+        unique_names=unique_names,
+        unique_name_cell=unique_name_cell,
+    )

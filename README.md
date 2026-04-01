@@ -26,24 +26,77 @@ For development:
 pip install pycmap-score[dev]
 ```
 
-## Quick Start
+## Quick Start (with synthetic data)
+
+No download required — generate a synthetic dataset and run the full pipeline immediately:
+
+```python
+from pycmap import compute_detailed_results, compute_permuted_results, synthetic_data, read_grp
+
+# Generate synthetic data that includes gene IDs from the test files
+all_genes = read_grp("test_files/readUp.grp") + read_grp("test_files/readDown.grp")
+data = synthetic_data(extra_genes=all_genes)
+
+# Run detailed results
+det = compute_detailed_results("test_files/readUp.grp", "test_files/readDown.grp", data)
+print(det.to_dataframe().head(10))
+
+# Run permuted results
+perm = compute_permuted_results(det, data, mode="by_name")
+print(perm.to_dataframe())
+```
+
+You can also use the Alzheimer gene sets:
+
+```python
+all_genes = (
+    read_grp("test_files/alzheimerUp.grp") +
+    read_grp("test_files/alzheimerDown.grp")
+)
+data = synthetic_data(extra_genes=all_genes)
+det = compute_detailed_results("test_files/alzheimerUp.grp", "test_files/alzheimerDown.grp", data)
+print(det.to_dataframe().head(10))
+```
+
+### With real CMAP data
 
 ```python
 from pycmap import cmap
 
-# Run full analysis — returns detailed, by-name, and by-cell results
+# Requires real rank matrix + metadata (see Data Setup below)
 detailed, by_name, by_cell = cmap("readUp.grp", "readDown.grp", data_dir="/path/to/data")
-
-# View top results as pandas DataFrames
-print(detailed.to_dataframe().head(10))
-print(by_name.to_dataframe().head(10))
-
-# Query a specific drug
 print(by_name.to_dataframe().loc["geldanamycin"])
-
-# Query by drug + cell line
-print(by_cell.to_dataframe().loc["tanespimycin - MCF7"])
 ```
+
+## Synthetic Data API
+
+`synthetic_data()` generates a realistic CMAP-shaped dataset for testing, demos, and development:
+
+```python
+from pycmap import synthetic_data
+
+# Full-size (22,283 genes x 6,100 instances) — ~260 MB, takes ~2 seconds
+data = synthetic_data()
+
+# Smaller for quick experiments
+data = synthetic_data(n_genes=5000, n_instances=200)
+
+# Ensure your query gene IDs are present in the matrix
+data = synthetic_data(extra_genes=["BRCA1", "TP53", "MYC", "CDKN1A"])
+
+# Custom number of drugs (each gets multiple instances for permutation testing)
+data = synthetic_data(n_drugs=8)
+
+# Reproducible (same seed = same data)
+data = synthetic_data(seed=123)
+```
+
+Parameters:
+- `n_genes` — number of genes/rows (default: 22,283)
+- `n_instances` — number of drug instances/columns (default: 6,100)
+- `extra_genes` — gene IDs to guarantee are in the matrix (for `.grp` file compatibility)
+- `n_drugs` — number of unique drug names (default: auto, up to 15)
+- `seed` — random seed (default: 42)
 
 ## Lower-Level API
 
@@ -56,7 +109,7 @@ from pycmap import (
     ks_statistic,
 )
 
-# Load data
+# Load real data from disk
 data = load_cmap_data("/path/to/data")
 
 # Compute detailed results only
@@ -72,7 +125,7 @@ score = ks_statistic(ranks, n=100)
 
 ## Data Setup
 
-The algorithm requires a pre-computed rank matrix and metadata files. You can:
+The algorithm requires a pre-computed rank matrix and metadata files. You can use `synthetic_data()` for testing (see above) or real data:
 
 ### Option A: Download and install automatically
 

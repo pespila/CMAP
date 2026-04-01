@@ -22,7 +22,7 @@ from pathlib import Path
 
 from pycmap._types import CmapData, DetailedResults, PermutedResults
 from pycmap.core import ks_statistic, ks_statistic_batch, non_null_pct
-from pycmap.data import load_cmap_data, load_rank_matrix, read_gmt, read_grp
+from pycmap.data import load_cmap_data, load_rank_matrix, read_gmt, read_grp, synthetic_data
 from pycmap.detailed import compute_detailed_results
 from pycmap.install import load_p_values, load_specificity
 from pycmap.permuted import compute_permuted_results
@@ -44,6 +44,7 @@ __all__ = [
     "read_gmt",
     "load_rank_matrix",
     "load_cmap_data",
+    "synthetic_data",
     # Types
     "CmapData",
     "DetailedResults",
